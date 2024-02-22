@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Replay Downloader by Kyto</title>
+    <link rel="stylesheet" href="tools.css" type="text/css">
+    <script src="sorttable.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <div class="side">
+        <strong>Player:</strong>
+        <br>
+        <input type="text" id="playerName">
+        <br>
+        <strong>Markers (min):</strong>
+        <br>
+        <input type="number" min="0" id="minMarkers">
+        <hr>
+        <strong>Date format:</strong>
+        <br>
+        <input type="text" id="dateFormat">
+        <br>
+        <strong>URLs:</strong>
+        <br>
+        <textarea id="replayURLs"></textarea>
+        <br>
+        <button id="replaysButton">Reload</button>
+      </div>
+      <div class="side">
+        <table id="replaysTable">
+          <thead>
+            <tr>
+              <th class="filename">Replay</th>
+              <th class="date">Date</th>
+              <th class="markers">Markers</th>
+              <th class="server">Server</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <script src="replaydl.js"></script>
+  </body>
+</html>
