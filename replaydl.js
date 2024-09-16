@@ -5,6 +5,7 @@ const defaultReplayURLs = [
     'https://eu.kishflex.top',
     'http://45.77.65.202/replays_de',
     'http://45.77.65.202/replays_uk',
+    'http://bobr.furioness.net'm
     ''
 ];
 
