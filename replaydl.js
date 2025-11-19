@@ -1,4 +1,7 @@
 const shortMonthIndex = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'};
+// const shortMonths = Object.keys(shortMonthIndex).join('|');
+// console.log(shortMonths);
+const replayRegExp = /href=\"(.*?([0-9]+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]+_[0-9]+).*?(?:([0-9]+)markers).*?\.(?:rep|zip))\"/g;
 const defaultReplayURLs = [
     'https://east.kishflex.top',
     'https://west.kishflex.top',
@@ -49,26 +52,19 @@ function htmldecode(str)
     return entDiv.innerHTML;
 }
 
-function parseDate(filename)
+// TODO: This sucks make it better:
+//       Consider that the date format may not be consistent or there at all.
+function formatDate(date)
 {
-    let date = filename.split('_').slice(-3, -1);
-    if(date.length < 2)
-        return null;
-
-    date[0] = `${date[0].slice(5, 9)}-${shortMonthIndex[date[0].slice(2, 5)]}-${date[0].slice(0, 2)}`;
-    date[1] = `${date[1].slice(0, 2)}:${date[1].slice(2, 4)}:${date[1].slice(4, 6)}`;
-
-    // date = new Date(`${date[0]}T${date[1]}`);
-    date = `${date[0]} ${date[1]}`; // todo: better formatting
+    // console.log(date);
+    const year = date.slice(5, 9);
+    const month = shortMonthIndex[date.slice(2, 5)];
+    const day = date.slice(0, 2);
+    const hour = date.slice(10, 12);
+    const minute = date.slice(12, 14);
+    const second = date.slice(14, 16);
+    date = `${year}-${month}-${day} ${hour}:${minute}:${second}`;
     return date;
-}
-
-function parseMarkers(filename)
-{
-    let markers = filename.split('_').slice(-1)[0];
-    if(markers.slice(-11) != 'markers.rep')
-        return '';
-    return markers.slice(0, -11);
 }
 
 function applyFilters(playerName, minMarkers)
@@ -94,10 +90,10 @@ minMarkers.addEventListener('keydown', (event) => event.preventDefault());
 
 function appendRow(tbody, url, replay)
 {
-    const filename = replay.split('/').slice(-1)[0];
-    const date = parseDate(filename);
-    const dateKey = date.replace(/\D/g, '');
-    const markers = parseMarkers(filename)
+    // const filename = replay[1].split('/').slice(-1)[0];
+    const filename = replay[1];
+    const date = formatDate(replay[2]);
+    const markers = replay[3];
     const server = url.split('//').slice(1).join();
 
     const row = document.createElement('tr');
@@ -113,7 +109,7 @@ function appendRow(tbody, url, replay)
     markersCell.classList.add('markers', 'centered');
     serverCell.classList.add('server');
 
-    filenameCell.innerHTML = `<a href="${url}/${replay}">${filename}</a>`;
+    filenameCell.innerHTML = `<a href="${url}/${filename}">${filename}</a>`;
     dateCell.innerText = date;
     markersCell.innerText = markers;
     serverCell.innerText = server;
@@ -157,16 +153,22 @@ async function getReplays(urls)
         const replays = new Set();
         const html = htmldecode(await fetchHTML(url));
         let replayCount = 0;
-        for(const replay of html.matchAll(/href=\"(.*?)\"/g))
+        for(const replay of html.matchAll(replayRegExp))
         {
-            if(replay[1].slice(-4) == '.rep' && !replays.has(replay[1]))
+            // console.log(replay);
+
+            // TODO: Having the set here is kind of useless maybe?
+            // avoid duplicates
+            if(!replays.has(replay[1]))
             {
-                replays.add(replay[1]);
-                appendRow(tbody, url, replay[1]);
+                appendRow(tbody, url, replay);
                 replayCount++;
             }
+
+            replays.add(replay[1]);
         }
         console.log(url, replayCount);
+        // console.log(replays);
     }
     if(!replayTableSorted)
     {
