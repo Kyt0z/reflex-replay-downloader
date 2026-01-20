@@ -3,12 +3,17 @@ const shortMonthIndex = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Ma
 // console.log(shortMonths);
 const replayRegExp = /href=\"(.*?([0-9]+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]+_[0-9]+).*?(?:([0-9]+)markers).*?\.(?:rep|zip))\"/g;
 const defaultReplayURLs = [
-    'https://east.kishflex.top',
-    'https://west.kishflex.top',
-    'https://eu.kishflex.top',
-    'http://45.77.65.202/replays_de',
-    'http://45.77.65.202/replays_uk',
-    'http://bobr.furioness.net',
+    // 'https://east.kishflex.top',
+    // 'https://west.kishflex.top',
+    // 'https://eu.kishflex.top',
+    // 'http://45.77.65.202/replays_de',
+    // 'http://45.77.65.202/replays_uk',
+    'http://37.187.144.178', // CR2 UK#1
+    'http://bobr.furioness.net', // Bobr Rated
+    'http://reflex.goat.moe', // Goat Pen
+    'http://146.190.171.88', // California
+    'http://172.234.20.27', // Hotdog Hut CHICAGO
+    'http://172.104.28.176', // Hotdog Hut NEW YORK
     ''
 ];
 
@@ -109,7 +114,7 @@ function appendRow(tbody, url, replay)
     markersCell.classList.add('markers', 'centered');
     serverCell.classList.add('server');
 
-    filenameCell.innerHTML = `<a href="${url}/${filename}">${filename}</a>`;
+    filenameCell.innerHTML = `<a href="${url}/${filename}">${url}/${filename}</a>`;
     dateCell.innerText = date;
     markersCell.innerText = markers;
     serverCell.innerText = server;
